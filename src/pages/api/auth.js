@@ -5,7 +5,7 @@ import { URLSearchParams } from "url";
 const API_ENDPOINT = "https://discord.com/api/v8";
 const CLIENT_ID = "935204697030131712";
 const CLIENT_SECRET = "75NFVLpIVvNsQcM4Pqqx4RmTMMOmrIGI";
-const REDIRECT_URI = "http://localhost:3000";
+const REDIRECT_URI = "https://sol-auth.vercel.app";
 
 export default async function handler(req, res) {
   const { code } = req.query;
