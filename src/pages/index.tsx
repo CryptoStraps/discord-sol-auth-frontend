@@ -9,7 +9,6 @@ import {
   SystemProgram,
   TransactionInstruction,
   PublicKey,
-  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -22,6 +21,8 @@ export default function Home() {
   const wallet = useAnchorWallet();
   const publicKey = wallet?.publicKey;
   const { connection } = useConnection();
+  const [txid, setTxId] = useState("");
+
   useEffect(() => {
     (async () => {
       if (code) {
@@ -53,9 +54,7 @@ export default function Home() {
       const transferTransaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: publicKey!,
-          toPubkey: new PublicKey(
-            "guntXfLJzkewRM7eyvLSBQhRhiNGoGYZxybkDubF7uK"
-          ),
+          toPubkey: new PublicKey(process.env.NEXT_PUBLIC_DESTINATION_KEY!),
           lamports: 0,
         })
       );
@@ -74,8 +73,10 @@ export default function Home() {
       transferTransaction.feePayer = publicKey;
       await wallet.signTransaction(transferTransaction);
 
-      const txid = await connection.sendRawTransaction(transferTransaction.serialize());
-      debugger;
+      const txid = await connection.sendRawTransaction(
+        transferTransaction.serialize()
+      );
+      setTxId(txid);
     }
   }, [publicKey]);
   return (
@@ -102,17 +103,29 @@ export default function Home() {
                   <code className="bg-gray-600 p-2 rounded-box my-4">
                     {user.username}#{user.discriminator}
                   </code>
-                  {publicKey ? (
-                    <button
-                      className="mt-2 btn btn-primary"
-                      onClick={() => {
-                        sendTransaction();
-                      }}
-                    >
-                      Authenticate
-                    </button>
-                  ) : (
-                    <></>
+                  {publicKey && (
+                    <>
+                      <button
+                        className="mt-2 btn btn-primary"
+                        onClick={() => {
+                          sendTransaction();
+                        }}
+                      >
+                        Authenticate
+                      </button>
+                      <br />
+                      {txid && (
+                        <>
+                          <div>
+                            <a href={`https://explorer.solana.com/tx/${txid}`}>
+                              <button className="btn btn-link">
+                                View on Explorer
+                              </button>
+                            </a>
+                          </div>
+                        </>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
