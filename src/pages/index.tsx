@@ -111,7 +111,7 @@ export default function Home() {
                           sendTransaction();
                         }}
                       >
-                        Authenticate
+                        Connect Discord
                       </button>
                       <br />
                       {txid && (
@@ -135,7 +135,9 @@ export default function Home() {
               <div className="card bg-gray-800">
                 <div className="card-body">
                   <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify">
-                    <button className="btn btn-primary">Authorize</button>
+                    <button className="btn btn-primary">
+                      Make proof tx
+                    </button>
                   </a>
                 </div>
               </div>
