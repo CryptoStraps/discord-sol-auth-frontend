@@ -134,7 +134,7 @@ export default function Home() {
             <>
               <div className="card bg-gray-800">
                 <div className="card-body">
-                  <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&scope=identify">
+                  <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify">
                     <button className="btn btn-primary">Authorize</button>
                   </a>
                 </div>
