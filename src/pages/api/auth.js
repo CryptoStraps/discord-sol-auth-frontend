@@ -15,6 +15,7 @@ export default async function handler(req, res) {
     grant_type: "authorization_code",
     code: code,
     redirect_uri: REDIRECT_URI,
+    
   };
   const params = new URLSearchParams(data);
   const resp = await fetch(`${API_ENDPOINT}/oauth2/token`, {
