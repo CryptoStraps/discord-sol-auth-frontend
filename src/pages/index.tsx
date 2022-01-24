@@ -93,59 +93,48 @@ export default function Home() {
         className="fixed flex flex-col justify-center items-center"
         style={{ inset: 0 }}
       >
-        <div>
-          {user ? (
-            <>
-              <div className="card bg-gray-800">
-                <div className="card-body">
-                  <WalletMultiButton />
+        <div className="card bg-gray-800">
+          <div className="card-body text-center">
+            <div className="card-title mb-4">CryptoStraps Whitelist</div>
+            {user ? (
+              <>
+                <WalletMultiButton />
 
-                  <code className="bg-gray-600 p-2 rounded-box my-4">
-                    {user.username}#{user.discriminator}
-                  </code>
-                  {publicKey && (
-                    <>
-                      <button
-                        className="mt-2 btn btn-primary"
-                        onClick={() => {
-                          sendTransaction();
-                        }}
-                      >
-                        Send proof tx
-                      </button>
-                      <br />
-                      {txid && (
-                        <>
-                          <div>
-                            <a href={`https://explorer.solana.com/tx/${txid}`}>
-                              <button className="btn btn-link">
-                                View on Explorer
-                              </button>
-                            </a>
-                          </div>
-                        </>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="card bg-gray-800">
-                <div className="card-body">
-                  <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify">
-                    <button className="btn btn-primary">
-                      Connect Discord
+                <code className="bg-gray-600 p-2 rounded-box my-4">
+                  {user.username}#{user.discriminator}
+                </code>
+                {publicKey && (
+                  <>
+                    <button
+                      className="mt-2 btn btn-primary"
+                      onClick={() => {
+                        sendTransaction();
+                      }}
+                    >
+                      Send proof tx
                     </button>
-                  </a>
-                </div>
-              </div>
-            </>
-            
-          )}
+                    <br />
+                    {txid && (
+                      <>
+                        <a href={`https://explorer.solana.com/tx/${txid}`}>
+                          <button className="btn btn-link">
+                            View on Explorer
+                          </button>
+                        </a>
+                      </>
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify">
+                  <button className="btn btn-primary">Connect Discord</button>
+                </a>
+              </>
+            )}
+          </div>
         </div>
-
       </main>
     </div>
   );
