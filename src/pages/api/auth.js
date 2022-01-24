@@ -7,6 +7,7 @@ const CLIENT_ID = "935204697030131712";
 const CLIENT_SECRET = "75NFVLpIVvNsQcM4Pqqx4RmTMMOmrIGI";
 const REDIRECT_URI = "https://sol-auth.vercel.app";
 
+
 export default async function handler(req, res) {
   const { code } = req.query;
   const data = {
@@ -15,7 +16,7 @@ export default async function handler(req, res) {
     grant_type: "authorization_code",
     code: code,
     redirect_uri: REDIRECT_URI,
-    
+
   };
   const params = new URLSearchParams(data);
   const resp = await fetch(`${API_ENDPOINT}/oauth2/token`, {
