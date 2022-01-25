@@ -29,11 +29,13 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       if (code) {
-        const auth = await fetch(`/api/auth?code=${code}`)
+        const auth = await fetch(`https://api.cryptostraps.io/auth?code=${code}`)
           .catch(() => {
             setUser(null);
           })
           .then((res) => res && res.json());
+
+        if (!auth) {return}
         fetch(`https://discord.com/api/v8/users/@me`, {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         })
@@ -102,7 +104,7 @@ export default function Home() {
           const tx = await connection.getConfirmedTransaction(txid);
           if (tx) {
             setTxLoading("loaded");
-            await fetch(`/api/validate?txid=${txid}`);
+            await fetch(`https://api.cryptostraps.io/validate?txid=${txid}`);
           }
           await sleep(1000);
         }
@@ -130,6 +132,7 @@ export default function Home() {
               <>
                 <h2 className="mb-3">1. Login to Discord</h2>
 
+                {/* <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify"> */}
                 <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&scope=identify%20guilds">
                   <button className="btn btn-primary">Connect Discord</button>
                 </a>
@@ -144,7 +147,6 @@ export default function Home() {
             )}
             {
               <>
-                {/* <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify"> */}
 
                 {txLoading === "" && user && publicKey && (
                   <button
