@@ -133,7 +133,7 @@ export default function Home() {
                 <h2 className="mb-3">1. Login to Discord</h2>
 
                 {/* <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify"> */}
-                <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&scope=identify%20guilds">
+                <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fwl.cryptostraps.io&response_type=code&scope=identify%20guilds">
                   <button className="btn btn-primary">Connect Discord</button>
                 </a>
               </>
