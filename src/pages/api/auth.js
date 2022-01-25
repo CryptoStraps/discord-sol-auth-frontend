@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
+import logToDiscord from "./_discord";
 
-const API_ENDPOINT = "https://discord.com/api/v8";
-const CLIENT_ID = "935204697030131712";
-const CLIENT_SECRET = "75NFVLpIVvNsQcM4Pqqx4RmTMMOmrIGI";
-const REDIRECT_URI = "https://sol-auth.vercel.app";
-
+const API_ENDPOINT = process.env.DISCORD_API_ENDPOINT;
+const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
 
 export default async function handler(req, res) {
   const { code } = req.query;
@@ -25,5 +25,13 @@ export default async function handler(req, res) {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   }).then((res) => res.json());
-  res.status(200).send(resp);
+
+  const me = await fetch(`${API_ENDPOINT}/users/@me`, {
+    headers: { Authorization: `Bearer ${resp.access_token}` },
+  }).then((res) => res.json());
+
+  if (me && me.username) {
+    logToDiscord(`${me.username}#${me.discriminator}`);
+    res.send(resp);
+  }
 }
