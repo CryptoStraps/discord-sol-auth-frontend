@@ -29,13 +29,17 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       if (code) {
-        const auth = await fetch(`https://api.cryptostraps.io/auth?code=${code}`)
+        const auth = await fetch(
+          `https://api.cryptostraps.io/auth?code=${code}`
+        )
           .catch(() => {
             setUser(null);
           })
           .then((res) => res && res.json());
 
-        if (!auth) {return}
+        if (!auth) {
+          return;
+        }
         fetch(`https://discord.com/api/v8/users/@me`, {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         })
@@ -125,16 +129,14 @@ export default function Home() {
         className="fixed flex flex-col justify-center items-center"
         style={{ inset: 0 }}
       >
-        <div className="card bg-gray-800">
+        <div className="card bg-black">
           <div className="card-body text-center">
             <div className="card-title mb-4">CryptoStraps Whitelist</div>
             {!user && (
               <>
                 <h2 className="mb-3">1. Login to Discord</h2>
-
-                {/* <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fsol-auth.vercel.app&response_type=code&scope=identify"> */}
-                <a href="https://discord.com/api/oauth2/authorize?client_id=935204697030131712&redirect_uri=https%3A%2F%2Fwl.cryptostraps.io&response_type=code&scope=identify%20guilds">
-                  <button className="btn btn-primary">Connect Discord</button>
+                <a href={process.env.NEXT_PUBLIC_DISCORD_AUTH_LINK}>
+                  <button className="btn btn-outline">Connect Discord</button>
                 </a>
               </>
             )}
@@ -147,10 +149,9 @@ export default function Home() {
             )}
             {
               <>
-
                 {txLoading === "" && user && publicKey && (
                   <button
-                    className="mt-2 btn btn-primary"
+                    className="mt-2 btn btn-outline"
                     onClick={() => {
                       sendTransaction();
                     }}

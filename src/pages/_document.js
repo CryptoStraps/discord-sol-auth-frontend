@@ -5,10 +5,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta
-            name="description"
-            content="This site will fly high 🦤"
-          />
           <link rel="icon" href="/favicon.ico" />
 
           <link

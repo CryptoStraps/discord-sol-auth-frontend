@@ -8,10 +8,6 @@ import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
 import "../styles/App.css";
 
-const SOLANA_NETWORK = WalletAdapterNetwork.Mainnet;
-// const SOLANA_NETWORK = WalletAdapterNetwork.Devnet;
-const network = SOLANA_NETWORK;
-
 const WalletProvider = dynamic(
   () => import("../contexts/ClientWalletProvider"),
   {
@@ -20,7 +16,7 @@ const WalletProvider = dynamic(
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const endpoint = useMemo(() => "https://solana-api.projectserum.com", []);
+  const endpoint = useMemo(() => "https://alice.genesysgo.net", []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
