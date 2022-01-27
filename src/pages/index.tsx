@@ -25,6 +25,7 @@ export default function Home() {
   const { connection } = useConnection();
   const [txid, setTxId] = useState("");
   const [txLoading, setTxLoading] = useState("");
+  const [loggingIntoDiscord, setLogginIntoDiscord] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -136,13 +137,21 @@ export default function Home() {
               <>
                 <h2 className="mb-3">1. Login to Discord</h2>
                 <a href={process.env.NEXT_PUBLIC_DISCORD_AUTH_LINK}>
-                  <button className="btn btn-outline">Connect Discord</button>
+                  <button
+                    className={`btn btn-outline ${
+                      loggingIntoDiscord ? " loading" : ""
+                    }`}
+                    onClick={() => setLogginIntoDiscord(true)}
+                  >
+                    Connect Discord
+                  </button>
                 </a>
               </>
             )}
 
             {!publicKey && user && (
               <>
+                <code>{`${user.username}#${user.discriminator}`}</code>
                 <h2 className="mb-3">2. Login to Wallet</h2>
                 <WalletMultiButton />
               </>
