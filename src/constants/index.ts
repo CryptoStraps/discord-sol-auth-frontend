@@ -15,3 +15,6 @@ export const CHAIN_ID = ENV === 'mainnet-beta'
 export const SOLANA_RPC_ENDPOINT = ENV === "devnet"
     ? 'https://api.devnet.solana.com'
     : "https://solana-api.projectserum.com";
+
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const DISCORD_API_URL = process.env.NEXT_PUBLIC_DISCORD_API_URL;
