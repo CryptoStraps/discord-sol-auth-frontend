@@ -18,3 +18,4 @@ export const SOLANA_RPC_ENDPOINT = ENV === "devnet"
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const DISCORD_API_URL = process.env.NEXT_PUBLIC_DISCORD_API_URL;
+export const DISCORD_SERVER_ID = process.env.NEXT_PUBLIC_DISCORD_SERVER_ID;
