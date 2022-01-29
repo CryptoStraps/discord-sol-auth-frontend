@@ -13,6 +13,7 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { API_URL, DISCORD_API_URL } from "../constants";
 const sleep = (time = 1000) =>
   new Promise((resolve, reject) => setTimeout(() => resolve(undefined), time));
 
@@ -31,7 +32,7 @@ export default function Home() {
     (async () => {
       if (code) {
         const auth = await fetch(
-          `https://api.cryptostraps.io/auth?code=${code}`
+          `${API_URL}/auth?code=${code}`
         )
           .catch(() => {
             setUser(null);
@@ -41,7 +42,7 @@ export default function Home() {
         if (!auth) {
           return;
         }
-        fetch(`https://discord.com/api/v8/users/@me`, {
+        fetch(`${DISCORD_API_URL}/users/@me`, {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         })
           .then((res) => res.json())
@@ -56,7 +57,7 @@ export default function Home() {
             setUser(res);
 
             return fetch(
-              `https://discord.com/api/v8/guilds/897222373131042877/members/${res.id}`,
+              `${DISCORD_API_URL}/guilds/897222373131042877/members/${res.id}`,
               {
                 headers: { Authorization: `Bearer ${auth.access_token}` },
               }
@@ -109,7 +110,7 @@ export default function Home() {
           const tx = await connection.getConfirmedTransaction(txid);
           if (tx) {
             setTxLoading("loaded");
-            await fetch(`https://api.cryptostraps.io/validate?txid=${txid}`);
+            await fetch(`${API_URL}/validate?txid=${txid}`);
           }
           await sleep(1000);
         }
