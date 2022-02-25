@@ -134,12 +134,14 @@ export default function Home() {
               </div>
 
               <div className="my-6">
-              <WalletMultiButton />
+                <h2 className="mb-3">1. Connect Phantom</h2>
+
+                <WalletMultiButton />
               </div>
 
               {!user && !code && !error && publicKey && (
                 <>
-                  <h2 className="mb-3">1. Login to Discord</h2>
+                  <h2 className="mb-3">2. Connect Discord</h2>
                   <a href={process.env.NEXT_PUBLIC_DISCORD_AUTH_LINK}>
                     <button
                       className={`btn btn-outline ${
