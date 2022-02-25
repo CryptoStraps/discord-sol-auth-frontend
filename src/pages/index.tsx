@@ -41,31 +41,28 @@ export default function Home() {
           return;
         }
 
-        fetch(`${DISCORD_API_URL}/users/@me`, {
-          headers: { Authorization: `Bearer ${auth.access_token}` },
-        })
-          .then((res) => res.json())
-          .catch((e) => {
-            setUser(null);
-            setError(true);
-            alert(
-              `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
-            );
-          })
-          .then((res) => {
-            if (res.message === "401: Unauthorized") {
-              setUser(null);
-              setError(true);
-              alert(
-                `Problem with authentication, please restart the process and make sure you are in the right discord server.`
-              );
-              return;
-            }
-            setUser(res);
-          })
-          .then((res) => {
-            console.log(res);
-          });
+        let myUser;
+        let tries = 0;
+        while (!myUser && tries <5) {
+          tries++;
+          await fetch(`${DISCORD_API_URL}/users/@me`, {
+           headers: { Authorization: `Bearer ${auth.access_token}` },
+         })
+           .then(async (res) => {
+            myUser = await res.json();
+            setUser(myUser)
+           })
+           .catch((e) => {
+             if (tries >= 5) {
+
+               setUser(null);
+               setError(true);
+               alert(
+                 `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
+               );
+             }
+           });
+        }
       }
     })();
   }, [code]);
