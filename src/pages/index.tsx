@@ -14,6 +14,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { API_URL, DISCORD_API_URL } from "../constants";
+import nacl from "tweetnacl";
 const sleep = (time = 1000) =>
   new Promise((resolve, reject) => setTimeout(() => resolve(undefined), time));
 
@@ -21,19 +22,17 @@ export default function Home() {
   const [user, setUser] = useState<any>();
   const { query } = useRouter();
   const { code } = query;
-  const wallet = useAnchorWallet();
-  const publicKey = wallet?.publicKey;
+  const { publicKey, signMessage, signTransaction } = useWallet();
   const { connection } = useConnection();
   const [txid, setTxId] = useState("");
   const [txLoading, setTxLoading] = useState("");
   const [loggingIntoDiscord, setLogginIntoDiscord] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (code) {
-        const auth = await fetch(
-          `${API_URL}/auth?code=${code}`
-        )
+        const auth = await fetch(`${API_URL}/auth?code=${code}`)
           .catch(() => {
             setUser(null);
           })
@@ -42,26 +41,28 @@ export default function Home() {
         if (!auth) {
           return;
         }
+
+        if (auth.error) {
+          console.error(auth.error);
+          setError(true);
+          return;
+        }
+
         fetch(`${DISCORD_API_URL}/users/@me`, {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         })
           .then((res) => res.json())
           .catch(() => {
             setUser(null);
+            setError(true);
           })
           .then((res) => {
             if (res.message === "401: Unauthorized") {
               setUser(null);
+              setError(true);
               return;
             }
             setUser(res);
-
-            return fetch(
-              `${DISCORD_API_URL}/guilds/897222373131042877/members/${res.id}`,
-              {
-                headers: { Authorization: `Bearer ${auth.access_token}` },
-              }
-            ).then((res) => res.json());
           })
           .then((res) => {
             console.log(res);
@@ -72,34 +73,50 @@ export default function Home() {
 
   const sendTransaction = useCallback(async () => {
     if (publicKey) {
-      const transferTransaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey!,
-          toPubkey: new PublicKey(process.env.NEXT_PUBLIC_DESTINATION_KEY!),
-          lamports: 0,
-        })
+      if (!signMessage) {
+        alert("Wallet doesnt support message signing");
+        return;
+      }
+      const msg = user.id;
+      const signed = await (window as any).solana.signMessage(
+        new TextEncoder().encode(`${msg}`),
+        "utf8"
       );
-
-      await transferTransaction.add(
-        new TransactionInstruction({
-          keys: [{ pubkey: publicKey, isSigner: true, isWritable: true }],
-          data: Buffer.from(`${user.username}#${user.discriminator}`, "utf-8"),
-          programId: new PublicKey(
-            "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
-          ),
-        })
+      var buf = new TextEncoder().encode(`${msg}`);
+      const verified = nacl.sign.detached.verify(
+        buf,
+        signed.signature,
+        publicKey.toBytes()
       );
-      const { blockhash } = await connection.getRecentBlockhash();
-      transferTransaction.recentBlockhash = blockhash;
-      transferTransaction.feePayer = publicKey;
-      await wallet.signTransaction(transferTransaction);
-
-      const txid = await connection.sendRawTransaction(
-        transferTransaction.serialize()
-      );
-      setTxId(txid);
+      if (verified) {
+        alert(signed.signature.toString())
+        const sig = await fetch(
+          `${API_URL}/submit?signature=${signed.signature.toJSON().data}&pubkey=${publicKey.toBase58()}&discordId=${user.id}`
+        ).then((res) => res && res.json());
+        const tx = new Transaction();
+        const { blockhash } = await connection.getRecentBlockhash();
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = publicKey;
+        tx.add(
+          new TransactionInstruction({
+            keys: [{ pubkey: publicKey, isSigner: true, isWritable: true }],
+            data: Buffer.from(
+              `${user.username}#${user.discriminator} (${user.id})`,
+              "utf-8"
+            ),
+            programId: new PublicKey(
+              "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+            ),
+          })
+        );
+        await signTransaction!(tx);
+        const id = await connection.sendRawTransaction(tx.serialize());
+        setTxId(id);
+      } else {
+        setError(true);
+      }
     }
-  }, [publicKey]);
+  }, [publicKey, user]);
 
   useEffect(() => {
     (async () => {
@@ -111,6 +128,7 @@ export default function Home() {
           if (tx) {
             setTxLoading("loaded");
             await fetch(`${API_URL}/validate?txid=${txid}`);
+            confirmed = true;
           }
           await sleep(1000);
         }
@@ -128,20 +146,19 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main
-        className="fixed flex flex-col justify-center items-center"
+        className="flex fixed flex-col justify-center items-center"
         style={{ inset: 0 }}
       >
-        <div className="card bg-black">
-          <div className="card-body text-center">
-            <div className="card-title mb-4">CryptoStraps Whitelist</div>
-            {!user && (
+        <div className="bg-black card">
+          <div className="text-center card-body">
+            <div className="mb-4 card-title">CryptoStraps Whitelist</div>
+            {!user && !code && !error && (
               <>
                 <h2 className="mb-3">1. Login to Discord</h2>
                 <a href={process.env.NEXT_PUBLIC_DISCORD_AUTH_LINK}>
                   <button
                     className={`btn btn-outline ${
-                      loggingIntoDiscord ? " loading" : ""
-                    }`}
+                      loggingIntoDiscord ? "loading" : ""}`}
                     onClick={() => setLogginIntoDiscord(true)}
                   >
                     Connect Discord
@@ -150,7 +167,10 @@ export default function Home() {
               </>
             )}
 
-            {!publicKey && user && (
+            {code && !error && !user && <>Verifying...</>}
+            {code && error && !user && <>Error! Try again.</>}
+
+            {!publicKey && user && !error && (
               <>
                 <code>{`${user.username}#${user.discriminator}`}</code>
                 <h2 className="mb-3">2. Login to Wallet</h2>
@@ -166,12 +186,16 @@ export default function Home() {
                       sendTransaction();
                     }}
                   >
-                    Send proof tx
+                    Sign Message
                   </button>
                 )}
                 {txLoading === "loading" && <>waiting for confirmation</>}
                 {txLoading === "loaded" && (
-                  <a href={`https://explorer.solana.com/tx/${txid}`}>
+                  <a
+                    href={`https://explorer.solana.com/tx/${txid}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <button className={`btn btn-link`}>View on Explorer</button>
                   </a>
                 )}
