@@ -123,7 +123,7 @@ export default function Home() {
               <div className="mb-4 card-title">CryptoStraps Whitelist</div>
               <div className="m-3 shadow-lg">
                 <Image
-                  src="/android-chrome-192x192.png"
+                  src="/logogo.png"
                   alt="Logo"
                   width={192}
                   height={192}
