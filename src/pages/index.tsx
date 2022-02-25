@@ -86,7 +86,11 @@ export default function Home() {
         publicKey.toBytes()
       );
       if (verified) {
-        const handle = `${user.username}-${user.discriminator}`
+        const handle = `${user.username}-${user.discriminator}`;
+        if (!user.username || !user.discriminator) {
+          alert('Oh, oh, something went wrong. Please restart!');
+          return;
+        }
         const sig = await fetch(
           `${API_URL}/submit?signature=${
             signed.signature.toJSON().data
