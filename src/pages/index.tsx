@@ -15,7 +15,11 @@ export default function Home() {
   const [txLoading, setTxLoading] = useState("");
   const [loggingIntoDiscord, setLogginIntoDiscord] = useState(false);
   const [error, setError] = useState(false);
+  const [found, setFound] = useState(false);
 
+  /**
+   * START: Monkey patch of doom
+   */
   useEffect(() => {
     (async () => {
       if (code) {
@@ -43,29 +47,39 @@ export default function Home() {
 
         let myUser;
         let tries = 0;
-        while (!myUser && tries <5) {
+        while (!myUser && tries < 5) {
           tries++;
           await fetch(`${DISCORD_API_URL}/users/@me`, {
-           headers: { Authorization: `Bearer ${auth.access_token}` },
-         })
-           .then(async (res) => {
-            myUser = await res.json();
-            setUser(myUser)
-           })
-           .catch((e) => {
-             if (tries >= 5) {
-
-               setUser(null);
-               setError(true);
-               alert(
-                 `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
-               );
-             }
-           });
+            headers: { Authorization: `Bearer ${auth.access_token}` },
+          })
+            .then(async (res) => {
+              myUser = await res.json();
+              setUser(myUser);
+            })
+            .catch((e) => {
+              if (tries >= 5) {
+                setUser(null);
+                setError(true);
+                alert(
+                  `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
+                );
+              }
+            });
         }
       }
     })();
   }, [code]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const hasRegistered = await fetch(
+          `${API_URL}/status/one?pubkey=${publicKey?.toBase58()}`
+        ).then((res) => res.json());
+        setFound(hasRegistered.found);
+      } catch {}
+    })();
+  }, [publicKey]);
 
   const sendTransaction = useCallback(async () => {
     if (publicKey) {
@@ -88,8 +102,8 @@ export default function Home() {
       if (verified) {
         const handle = `${user.username}-${user.discriminator}`;
         if (!user.username || !user.discriminator) {
-          alert('Oh, oh, something went wrong. Please restart!');
-          window.location.href = 'https://whitelist.cryptostraps.io';
+          alert("Oh, oh, something went wrong. Please restart!");
+          window.location.href = "https://whitelist.cryptostraps.io";
           return;
         }
         const sig = await fetch(
@@ -125,19 +139,37 @@ export default function Home() {
             <div className="text-center card-body">
               <div className="mb-4 card-title">CryptoStraps Whitelist</div>
               <div className="shadow-lg">
-                <Image
-                  src="/logogo.png"
-                  alt="Logo"
-                  width={192}
-                  height={125}
-                />
+                <Image src="/logogo.png" alt="Logo" width={192} height={125} />
               </div>
 
               <div className="my-6">
-                <h2 className="mb-3">1. Connect Phantom</h2>
+                <h2 className="mb-3">1. Connect Wallet</h2>
 
                 <WalletMultiButton />
               </div>
+
+              {found && (
+                <>
+                  <div className="shadow-lg alert alert-success">
+                    <div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="flex-shrink-0 w-6 h-6 stroke-current"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span>You have already registered!</span>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {!user && !code && !error && publicKey && (
                 <>
