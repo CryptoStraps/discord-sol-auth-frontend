@@ -167,12 +167,15 @@ export default function Home() {
               {
                 <>
                   {user && publicKey && txLoading === "" && (
-                    <button
-                      className="mt-2 btn btn-outline"
-                      onClick={() => sendTransaction()}
-                    >
-                      Sign Message
-                    </button>
+                    <>
+                      <h3>3. Sign message</h3>
+                      <button
+                        className="mt-2 btn btn-outline"
+                        onClick={() => sendTransaction()}
+                      >
+                        Sign Message
+                      </button>
+                    </>
                   )}
                   {user && publicKey && txLoading === "loading" && (
                     <>
