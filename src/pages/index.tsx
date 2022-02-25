@@ -89,6 +89,7 @@ export default function Home() {
         const handle = `${user.username}-${user.discriminator}`;
         if (!user.username || !user.discriminator) {
           alert('Oh, oh, something went wrong. Please restart!');
+          window.location.href = 'https://whitelist.cryptostraps.io';
           return;
         }
         const sig = await fetch(
