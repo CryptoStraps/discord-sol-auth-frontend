@@ -25,7 +25,7 @@ export default function Home() {
   const { publicKey, signMessage, signTransaction } = useWallet();
   const { connection } = useConnection();
   const [txid, setTxId] = useState("");
-  // const [txLoading, setTxLoading] = useState("");
+  const [txLoading, setTxLoading] = useState("");
   const [loggingIntoDiscord, setLogginIntoDiscord] = useState(false);
   const [error, setError] = useState(false);
 
@@ -90,11 +90,9 @@ export default function Home() {
       );
       if (verified) {
         const sig = await fetch(
-          `${API_URL}/submit?signature=${
-            signed.signature.toJSON().data
-          }&pubkey=${publicKey.toBase58()}&discordId=${user.id}`
+          `${API_URL}/submit?signature=${signed.signature.toJSON().data}&pubkey=${publicKey.toBase58()}&discordId=${user.id}`
         ).then((res) => res && res.json());
-        setTxId("foo");
+        setTxId('foo');
       } else {
         setError(true);
       }
@@ -142,7 +140,30 @@ export default function Home() {
                 <WalletMultiButton />
               </>
             )}
-            {<>{txid && <>Success! We got your address</>}</>}
+            {
+              <>
+                {user && publicKey && (
+                  <button
+                    className="mt-2 btn btn-outline"
+                    onClick={() => {
+                      sendTransaction();
+                    }}
+                  >
+                    Sign Message
+                  </button>
+                )}
+                {user && publicKey && txid && (
+                  <>
+                    <button disabled className="btn loading"></button>
+                  </>
+                )}
+                {user && publicKey && txid && (
+                  <>
+                    Success! We got your address
+                  </>
+                )}
+              </>
+            }
           </div>
         </div>
       </main>
