@@ -89,29 +89,10 @@ export default function Home() {
         publicKey.toBytes()
       );
       if (verified) {
-        alert(signed.signature.toString())
         const sig = await fetch(
           `${API_URL}/submit?signature=${signed.signature.toJSON().data}&pubkey=${publicKey.toBase58()}&discordId=${user.id}`
         ).then((res) => res && res.json());
-        const tx = new Transaction();
-        const { blockhash } = await connection.getRecentBlockhash();
-        tx.recentBlockhash = blockhash;
-        tx.feePayer = publicKey;
-        tx.add(
-          new TransactionInstruction({
-            keys: [{ pubkey: publicKey, isSigner: true, isWritable: true }],
-            data: Buffer.from(
-              `${user.username}#${user.discriminator} (${user.id})`,
-              "utf-8"
-            ),
-            programId: new PublicKey(
-              "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
-            ),
-          })
-        );
-        await signTransaction!(tx);
-        const id = await connection.sendRawTransaction(tx.serialize());
-        setTxId(id);
+        setTxId('foo');
       } else {
         setError(true);
       }
@@ -191,13 +172,9 @@ export default function Home() {
                 )}
                 {txLoading === "loading" && <>waiting for confirmation</>}
                 {txLoading === "loaded" && (
-                  <a
-                    href={`https://explorer.solana.com/tx/${txid}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <button className={`btn btn-link`}>View on Explorer</button>
-                  </a>
+                  <>
+                    Success! We got your address
+                  </>
                 )}
               </>
             }
