@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { API_URL, DISCORD_API_URL } from "../constants";
 import nacl from "tweetnacl";
+import Image from "next/image";
 const sleep = (time = 1000) =>
   new Promise((resolve, reject) => setTimeout(() => resolve(undefined), time));
 
@@ -119,6 +120,9 @@ export default function Home() {
         <div className="bg-black card">
           <div className="text-center card-body">
             <div className="mb-4 card-title">CryptoStraps Whitelist</div>
+            <div  className="m-3 shadow-lg">
+              <Image src="/android-chrome-192x192.png"  alt="Logo" width={192} height={192}/>
+            </div>
             {!user && !code && !error && (
               <>
                 <h2 className="mb-3">1. Login to Discord</h2>
