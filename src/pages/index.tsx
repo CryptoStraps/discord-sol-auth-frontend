@@ -86,12 +86,13 @@ export default function Home() {
         publicKey.toBytes()
       );
       if (verified) {
+        const handle = `${user.username}-${user.discriminator}`
         const sig = await fetch(
           `${API_URL}/submit?signature=${
             signed.signature.toJSON().data
           }&pubkey=${publicKey.toBase58()}&discordId=${
             user.id
-          }&discordHandle=${`${user.username}#${user.discriminator}`}`
+          }&discordHandle=${handle}`
         ).then((res) => res && res.json());
         setTxLoading("loaded");
       } else {
