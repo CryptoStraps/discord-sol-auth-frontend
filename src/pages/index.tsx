@@ -171,7 +171,7 @@ export default function Home() {
                   </button>
                 )}
                 {txLoading === "loading" && <>waiting for confirmation</>}
-                {txLoading === "loaded" && (
+                {txid && (
                   <>
                     Success! We got your address
                   </>
