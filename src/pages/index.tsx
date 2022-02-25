@@ -77,6 +77,7 @@ export default function Home() {
         alert("Wallet doesnt support message signing");
         return;
       }
+      setTxLoading('loading');
       const msg = user.id;
       const signed = await (window as any).solana.signMessage(
         new TextEncoder().encode(`${msg}`),
@@ -93,8 +94,11 @@ export default function Home() {
           `${API_URL}/submit?signature=${signed.signature.toJSON().data}&pubkey=${publicKey.toBase58()}&discordId=${user.id}`
         ).then((res) => res && res.json());
         setTxId('foo');
+        setTxLoading('loaded');
+
       } else {
         setError(true);
+        setTxLoading('loaded');
       }
     }
   }, [publicKey, user]);
@@ -142,7 +146,7 @@ export default function Home() {
             )}
             {
               <>
-                {user && publicKey && (
+                {user && publicKey && txLoading === '' &&  (
                   <button
                     className="mt-2 btn btn-outline"
                     onClick={() => {
@@ -152,12 +156,12 @@ export default function Home() {
                     Sign Message
                   </button>
                 )}
-                {user && publicKey && txid && (
+                {user && publicKey && txLoading === 'loading' && (
                   <>
                     <button disabled className="btn loading"></button>
                   </>
                 )}
-                {user && publicKey && txid && (
+                {user && publicKey && txLoading === 'loaded' && (
                   <>
                     Success! We got your address
                   </>
