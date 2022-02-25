@@ -124,16 +124,20 @@ export default function Home() {
           <div className="bg-black card">
             <div className="text-center card-body">
               <div className="mb-4 card-title">CryptoStraps Whitelist</div>
-              <div className="m-3 shadow-lg">
+              <div className="shadow-lg">
                 <Image
                   src="/logogo.png"
                   alt="Logo"
                   width={192}
-                  height={192}
+                  height={125}
                 />
               </div>
 
-              {!user && !code && !error && (
+              <div className="my-6">
+              <WalletMultiButton />
+              </div>
+
+              {!user && !code && !error && publicKey && (
                 <>
                   <h2 className="mb-3">1. Login to Discord</h2>
                   <a href={process.env.NEXT_PUBLIC_DISCORD_AUTH_LINK}>
@@ -181,7 +185,7 @@ export default function Home() {
             </div>
           </div>
           <br />
-          <WalletMultiButton />
+          {/* <WalletMultiButton /> */}
         </div>
       </main>
     </div>
