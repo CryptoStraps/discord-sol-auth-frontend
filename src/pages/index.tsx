@@ -20,8 +20,11 @@ export default function Home() {
     (async () => {
       if (code) {
         const auth = await fetch(`${API_URL}/auth?code=${code}`)
-          .catch(() => {
+          .catch((e) => {
             setUser(null);
+            alert(
+              `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
+            );
           })
           .then((res) => res && res.json());
 
@@ -31,6 +34,9 @@ export default function Home() {
 
         if (auth.error) {
           console.error(auth.error);
+          alert(
+            `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${auth.error}`
+          );
           setError(true);
           return;
         }
@@ -39,14 +45,20 @@ export default function Home() {
           headers: { Authorization: `Bearer ${auth.access_token}` },
         })
           .then((res) => res.json())
-          .catch(() => {
+          .catch((e) => {
             setUser(null);
             setError(true);
+            alert(
+              `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
+            );
           })
           .then((res) => {
             if (res.message === "401: Unauthorized") {
               setUser(null);
               setError(true);
+              alert(
+                `Problem with authentication, please restart the process and make sure you are in the right discord server.`
+              );
               return;
             }
             setUser(res);
@@ -105,10 +117,8 @@ export default function Home() {
         className="flex fixed flex-col justify-center items-center"
         style={{ inset: 0 }}
       >
-
         <div className="my-8 text-center">
           <div className="bg-black card">
-
             <div className="text-center card-body">
               <div className="mb-4 card-title">CryptoStraps Whitelist</div>
               <div className="m-3 shadow-lg">
@@ -168,8 +178,7 @@ export default function Home() {
             </div>
           </div>
           <br />
-          <WalletMultiButton/>
-
+          <WalletMultiButton />
         </div>
       </main>
     </div>
