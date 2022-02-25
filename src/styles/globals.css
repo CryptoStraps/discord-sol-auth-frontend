@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.wallet-adapter-button-trigger,
+.wallet-adapter-dropdown {
+    width: 200px !important;
+    max-width: 200px !important;
+    margin: 0 auto !important;
+}

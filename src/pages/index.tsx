@@ -105,68 +105,71 @@ export default function Home() {
         className="flex fixed flex-col justify-center items-center"
         style={{ inset: 0 }}
       >
-        <div  style={{ position: "absolute", right: "2rem", top: "2rem", width: 200 }}>
-          <WalletMultiButton
-          />
-        </div>
-        <div className="bg-black card">
-          <div className="text-center card-body">
-            <div className="mb-4 card-title">CryptoStraps Whitelist</div>
-            <div className="m-3 shadow-lg">
-              <Image
-                src="/android-chrome-192x192.png"
-                alt="Logo"
-                width={192}
-                height={192}
-              />
+
+        <div className="my-8 text-center">
+          <div className="bg-black card">
+
+            <div className="text-center card-body">
+              <div className="mb-4 card-title">CryptoStraps Whitelist</div>
+              <div className="m-3 shadow-lg">
+                <Image
+                  src="/android-chrome-192x192.png"
+                  alt="Logo"
+                  width={192}
+                  height={192}
+                />
+              </div>
+
+              {!user && !code && !error && (
+                <>
+                  <h2 className="mb-3">1. Login to Discord</h2>
+                  <a href={process.env.NEXT_PUBLIC_DISCORD_AUTH_LINK}>
+                    <button
+                      className={`btn btn-outline ${
+                        loggingIntoDiscord ? "loading" : ""}`}
+                      onClick={() => setLogginIntoDiscord(true)}
+                    >
+                      Connect Discord
+                    </button>
+                  </a>
+                </>
+              )}
+
+              {code && !error && !user && <>Verifying...</>}
+              {code && error && !user && <>Error! Try again.</>}
+
+              {!publicKey && user && !error && (
+                <>
+                  <code>{`${user.username}#${user.discriminator}`}</code>
+                  <h2 className="mb-3">2. Login to Wallet</h2>
+                  <WalletMultiButton />
+                </>
+              )}
+              {
+                <>
+                  {user && publicKey && txLoading === "" && (
+                    <button
+                      className="mt-2 btn btn-outline"
+                      onClick={() => sendTransaction()}
+                    >
+                      Sign Message
+                    </button>
+                  )}
+                  {user && publicKey && txLoading === "loading" && (
+                    <>
+                      <button disabled className="btn loading"></button>
+                    </>
+                  )}
+                  {user && publicKey && txLoading === "loaded" && (
+                    <>Success! We got your address</>
+                  )}
+                </>
+              }
             </div>
-
-            {!user && !code && !error && (
-              <>
-                <h2 className="mb-3">1. Login to Discord</h2>
-                <a href={process.env.NEXT_PUBLIC_DISCORD_AUTH_LINK}>
-                  <button
-                    className={`btn btn-outline ${
-                      loggingIntoDiscord ? "loading" : ""}`}
-                    onClick={() => setLogginIntoDiscord(true)}
-                  >
-                    Connect Discord
-                  </button>
-                </a>
-              </>
-            )}
-
-            {code && !error && !user && <>Verifying...</>}
-            {code && error && !user && <>Error! Try again.</>}
-
-            {!publicKey && user && !error && (
-              <>
-                <code>{`${user.username}#${user.discriminator}`}</code>
-                <h2 className="mb-3">2. Login to Wallet</h2>
-                <WalletMultiButton />
-              </>
-            )}
-            {
-              <>
-                {user && publicKey && txLoading === "" && (
-                  <button
-                    className="mt-2 btn btn-outline"
-                    onClick={() => sendTransaction()}
-                  >
-                    Sign Message
-                  </button>
-                )}
-                {user && publicKey && txLoading === "loading" && (
-                  <>
-                    <button disabled className="btn loading"></button>
-                  </>
-                )}
-                {user && publicKey && txLoading === "loaded" && (
-                  <>Success! We got your address</>
-                )}
-              </>
-            }
           </div>
+          <br />
+          <WalletMultiButton/>
+
         </div>
       </main>
     </div>
