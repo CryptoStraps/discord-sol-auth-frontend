@@ -7,7 +7,7 @@ const withTM = require("next-transpile-modules")([
   // Uncomment wallets you want to use
   // "@solana/wallet-adapter-bitpie",
   // "@solana/wallet-adapter-coin98",
-  // "@solana/wallet-adapter-ledger",
+  "@solana/wallet-adapter-ledger",
   // "@solana/wallet-adapter-mathwallet",
   "@solana/wallet-adapter-phantom",
   "@solana/wallet-adapter-react",
