@@ -8,3 +8,7 @@
     max-width: 200px !important;
     margin: 0 auto !important;
 }
+
+.card {
+    overflow: visible !important;
+}
