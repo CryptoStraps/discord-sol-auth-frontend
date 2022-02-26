@@ -73,10 +73,12 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       try {
-        const hasRegistered = await fetch(
-          `${API_URL}/status/one?pubkey=${publicKey?.toBase58()}`
-        ).then((res) => res.json());
-        setFound(hasRegistered.found);
+        if (publicKey) {
+          const hasRegistered = await fetch(
+            `${API_URL}/status/one?pubkey=${publicKey?.toBase58()}`
+          ).then((res) => res.json());
+          setFound(hasRegistered.found);
+        }
       } catch {}
     })();
   }, [publicKey]);
