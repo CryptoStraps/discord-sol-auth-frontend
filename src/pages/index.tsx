@@ -217,7 +217,11 @@ export default function Home() {
                     </>
                   )}
                   {user && publicKey && txLoading === "loaded" && (
-                    <>Success! We got your address</>
+                    <>
+                      <div className="shadow-lg alert alert-success">
+                        Success! We got your address
+                      </div>
+                    </>
                   )}
                 </>
               }
