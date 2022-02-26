@@ -145,7 +145,7 @@ export default function Home() {
               </div>
 
               <div className="my-6">
-                <h2 className="mb-3">1. Connect Wallet</h2>
+                {!publicKey && <h2 className="mb-3">1. Connect Wallet</h2>}
 
                 <WalletMultiButton />
               </div>
