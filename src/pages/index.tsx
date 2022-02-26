@@ -26,12 +26,13 @@ export default function Home() {
         const auth = await fetch(`${API_URL}/auth?code=${code}`)
           .catch((e) => {
             setUser(null);
+            debugger
             alert(
               `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
             );
           })
           .then((res) => res && res.json());
-
+        debugger
         if (!auth) {
           return;
         }
@@ -42,6 +43,7 @@ export default function Home() {
             `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${auth.error}`
           );
           setError(true);
+          window.location.href = 'https://whitelist.cryptostraps.io';
           return;
         }
 
