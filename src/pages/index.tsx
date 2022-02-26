@@ -26,7 +26,7 @@ export default function Home() {
         const auth = await fetch(`${API_URL}/auth?code=${code}`)
           .catch((e) => {
             setUser(null);
-            debugger
+            window.location.href = 'https://whitelist.cryptostraps.io';
             alert(
               `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
             );
@@ -62,6 +62,7 @@ export default function Home() {
               if (tries >= 5) {
                 setUser(null);
                 setError(true);
+            window.location.href = 'https://whitelist.cryptostraps.io';
                 alert(
                   `Problem with authentication, please restart the process and make sure you are in the right discord server. \n ${e}`
                 );
