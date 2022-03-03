@@ -143,7 +143,7 @@ export default function Home() {
           <div className="bg-black card">
             <div className="text-center card-body">
               <div className="mb-4 card-title">CryptoStraps Whitelist</div>
-              <div className="shadow-lg">
+              <div className="flex justify-center items-center shadow-lg">
                 <Image src="/logogo.png" alt="Logo" width={192} height={125} />
               </div>
 
