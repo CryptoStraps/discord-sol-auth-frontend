@@ -122,6 +122,7 @@ export default function Home() {
 
       const tx = new Transaction({
         feePayer: publicKey,
+        
         recentBlockhash: blockhash,
       }).add(
         createBurnCheckedInstruction(
