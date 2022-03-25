@@ -260,7 +260,7 @@ export default function Home() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {!state.nftsLoading &&
                 state.nfts?.map((nft) => (
-                  <div className="card border overflow-hidden">
+                  <div key={nft.mint} className="card border overflow-hidden">
                     <div className="card-body p-0 overflow-hidden">
                       <div className="relative">
                         <span className="absolute top-0 left-0 right-0">
