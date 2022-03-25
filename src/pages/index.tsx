@@ -156,6 +156,7 @@ export default function Home() {
 
       dispatch({ type: "txMap", payload: { txMap: map } });
       dispatch({ type: "txLoading", payload: { txLoading: false } });
+      dispatch({ type: "balance", payload: { balance: state.balance - 1500 } });
     }
   };
 
@@ -239,14 +240,19 @@ export default function Home() {
                 <div className="flex justify-between items-center">
                   <WalletMultiButton />
                   {publicKey && (
-                    <div className=" ml-auto self-end border-4 rounded-full bg-white border-white text-black flex flex-row justify-between items-center w-60">
-                      <strong className="mx-8 w-full text-center">
-                        {state.balance.toFixed(2)}
-                      </strong>
-                      <img
-                        src="https://arweave.net/rjP_BdMqFsXBWoInFYuVNDdqLzW1xo82egb74WRl3Hc"
-                        className="w-16 rounded-full shadow"
-                      />
+                    <div>
+                      <div className=" ml-auto self-end border-4 rounded-full bg-white border-white text-black flex flex-row justify-end items-center">
+                        <div>
+                          <div className="text-right mr-4 mb-1">Balance</div>
+                          <strong className="mx-4 w-full text-center">
+                            {state.balance.toFixed(2)}
+                          </strong>
+                        </div>
+                        <img
+                          src="https://arweave.net/rjP_BdMqFsXBWoInFYuVNDdqLzW1xo82egb74WRl3Hc"
+                          className="w-16 rounded-full shadow"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -261,13 +267,14 @@ export default function Home() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {!state.nftsLoading &&
                 state.nfts?.map((nft) => (
-                  <div key={nft.mint} className="card border overflow-hidden">
+                  <div
+                    key={nft.mint}
+                    className="card border border-gray-600 overflow-hidden"
+                  >
                     <div className="card-body p-0 overflow-hidden">
                       <div className="relative">
-                        <span className="absolute top-0 left-0 right-0">
-                          <span className="badge bg-black text-xl py-4 my-2 shadow">
-                            {nft.mint.slice(0, 6).toUpperCase()}
-                          </span>
+                        <span className="badge bg-black text-xl py-4 absolute top-0 left-0 right-0 rounded-tl-none rounded-bl-none rounded-tr-none rounded-br-2xl px-10 shadow">
+                          {nft.mint.slice(0, 6).toUpperCase()}
                         </span>
                         <video
                           src={nft.offchainMetadata.animation_url}
@@ -299,7 +306,10 @@ export default function Home() {
                                 <path d="M 25 3 C 18.363281 3 13 8.363281 13 15 L 13 20 L 9 20 C 7.300781 20 6 21.300781 6 23 L 6 47 C 6 48.699219 7.300781 50 9 50 L 41 50 C 42.699219 50 44 48.699219 44 47 L 44 23 C 44 21.300781 42.699219 20 41 20 L 37 20 L 37 15 C 37 8.363281 31.636719 3 25 3 Z M 25 5 C 30.566406 5 35 9.433594 35 15 L 35 20 L 15 20 L 15 15 C 15 9.433594 19.433594 5 25 5 Z M 25 30 C 26.699219 30 28 31.300781 28 33 C 28 33.898438 27.601563 34.6875 27 35.1875 L 27 38 C 27 39.101563 26.101563 40 25 40 C 23.898438 40 23 39.101563 23 38 L 23 35.1875 C 22.398438 34.6875 22 33.898438 22 33 C 22 31.300781 23.300781 30 25 30 Z" />
                               </svg>
                             </span>
-                            <span>Unlock!</span>
+                            <span className="flex gap-1 justify-center items-center" style={{flexWrap: 'wrap'}}>
+                              <span> Unlock!</span>
+                              <span className="badge">1500 $AMMO</span>
+                            </span>
                           </div>
                         )}
                       </button>
