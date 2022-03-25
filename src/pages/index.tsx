@@ -20,7 +20,7 @@ import {
 } from "@nfteyez/sol-rayz";
 import { MetadataKey } from "@nfteyez/sol-rayz/dist/config/metaplex";
 import { sleep } from "../util/sleep";
-import { AMMO, MEMO } from "../util/ids";
+import { AMMO, DESTINATION, findVerifiedCreator, MEMO } from "../util/ids";
 
 interface ParsedNFTAccount {
   mint: string;
@@ -61,7 +61,7 @@ export default function Home() {
     balance: 0,
     balanceLoading: true,
     nfts: [],
-    nftsLoading: true,
+    nftsLoading: false,
     txMap: new Map(),
   };
   const [state, dispatch] = useReducer(
@@ -103,13 +103,17 @@ export default function Home() {
   const { connection } = useConnection();
   const { sendTransaction } = useWallet();
 
+  useEffect(() => {
+    if (!publicKey) {
+      dispatch({ type: "nfts", payload: { nfts: [] } });
+      dispatch({ type: "balance", payload: { balance: 0 } });
+    }
+  }, [publicKey]);
+
   const sned = async ({ selectedMint }: { selectedMint: string }) => {
     if (publicKey) {
       dispatch({ type: "txLoading", payload: { txLoading: true } });
-      const ata = await getAssociatedTokenAddress(
-        AMMO,
-        new PublicKey("gunzzzqPKDF4ZpURLdJF9L6X1iCtKtZxkzoCU9MhGav")
-      );
+      const ata = await getAssociatedTokenAddress(AMMO, DESTINATION);
       let blockhash;
       while (!blockhash) {
         try {
@@ -122,7 +126,6 @@ export default function Home() {
 
       const tx = new Transaction({
         feePayer: publicKey,
-
         recentBlockhash: blockhash,
       }).add(
         createBurnCheckedInstruction(
@@ -163,19 +166,16 @@ export default function Home() {
           type: "nftsLoading",
           payload: { nftsLoading: true },
         });
+
         const publicAddress = await resolveToWalletAddress({
           text: publicKey.toBase58(),
           connection,
         });
-        const nfts: ParsedNFTAccount[] = await (
+
+        const nfts: ParsedNFTAccount[] = (
           await getParsedNftAccountsByOwner({ publicAddress, connection })
-        ).filter((n) =>
-          n.data.creators.find(
-            (c) =>
-              c.address === "AtqMwB15umxEDsebekamLrHPaLBc3k8ihwrVVg6ytCN4" &&
-              !!c.verified
-          )
-        );
+        ).filter((n) => n.data.creators.find(findVerifiedCreator));
+
         const offchainMetadata = await Promise.all(
           nfts.map((n) => fetch(n.data.uri).then((res) => res.json()))
         );
@@ -223,10 +223,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="my-8 text-center container mx-auto px-6">
+        <div className="my-8 text-center container mx-auto px-6 relative">
           <div>
-            <div className="bg-black card mb-8 max-w-md mx-auto">
-              <div className="text-center card-body">
+            <div className="bg-black mb-8 w-full">
+              <div>
                 <div className="flex justify-center items-center shadow-lg">
                   <Image
                     src="/logogo.png"
@@ -236,18 +236,19 @@ export default function Home() {
                   />
                 </div>
 
-                <WalletMultiButton />
-
-                <div className="border-4 rounded-full bg-white border-white text-black flex flex-row justify-between items-center w-60 mx-auto mt-6">
-                  <strong className="mx-8 w-full text-center">
-                    {state.balance.toFixed(2)}
-                  </strong>
-                  <img
-                    src="https://arweave.net/rjP_BdMqFsXBWoInFYuVNDdqLzW1xo82egb74WRl3Hc"
-                    className="w-16 rounded-full shadow"
-                    style={{ transform: "scale(1.005)" }}
-                    alt=""
-                  />
+                <div className="flex justify-between items-center">
+                  <WalletMultiButton />
+                  {publicKey && (
+                    <div className=" ml-auto self-end border-4 rounded-full bg-white border-white text-black flex flex-row justify-between items-center w-60">
+                      <strong className="mx-8 w-full text-center">
+                        {state.balance.toFixed(2)}
+                      </strong>
+                      <img
+                        src="https://arweave.net/rjP_BdMqFsXBWoInFYuVNDdqLzW1xo82egb74WRl3Hc"
+                        className="w-16 rounded-full shadow"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
