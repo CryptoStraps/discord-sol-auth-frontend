@@ -5,6 +5,7 @@ module.exports = {
   mode: "jit",
   purge: ["./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class", // or 'false' or 'class'
+  important: true,
   theme: {
     fontFamily: {
       // sans: ['Graphik', 'sans-serif'],

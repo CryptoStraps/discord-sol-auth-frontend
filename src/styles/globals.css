@@ -9,6 +9,6 @@
     margin: 0 auto !important;
 }
 
-.card {
-    overflow: visible !important;
+:root {
+    background-color: black;
 }
