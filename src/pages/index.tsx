@@ -264,6 +264,11 @@ export default function Home() {
             {!!state.nftsLoading && (
               <span className="btn btn-disabled btn-ghost loading"></span>
             )}
+            {!state.nftsLoading && publicKey && !state.nfts?.length && (
+              <h2 className="text-2xl text-center">
+                No Loot boxes in your wallet.
+              </h2>
+            )}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {!state.nftsLoading &&
                 state.nfts?.map((nft) => (
@@ -281,7 +286,7 @@ export default function Home() {
                           poster={nft.offchainMetadata.image}
                           id={`video-${nft.mint}`}
                           className="cursor-pointer"
-                          onClick={(e) => onVideoClick(e)}
+                          onMouseEnter={(e) => onVideoClick(e)}
                         />
                       </div>
                       <button
@@ -306,7 +311,10 @@ export default function Home() {
                                 <path d="M 25 3 C 18.363281 3 13 8.363281 13 15 L 13 20 L 9 20 C 7.300781 20 6 21.300781 6 23 L 6 47 C 6 48.699219 7.300781 50 9 50 L 41 50 C 42.699219 50 44 48.699219 44 47 L 44 23 C 44 21.300781 42.699219 20 41 20 L 37 20 L 37 15 C 37 8.363281 31.636719 3 25 3 Z M 25 5 C 30.566406 5 35 9.433594 35 15 L 35 20 L 15 20 L 15 15 C 15 9.433594 19.433594 5 25 5 Z M 25 30 C 26.699219 30 28 31.300781 28 33 C 28 33.898438 27.601563 34.6875 27 35.1875 L 27 38 C 27 39.101563 26.101563 40 25 40 C 23.898438 40 23 39.101563 23 38 L 23 35.1875 C 22.398438 34.6875 22 33.898438 22 33 C 22 31.300781 23.300781 30 25 30 Z" />
                               </svg>
                             </span>
-                            <span className="flex gap-1 justify-center items-center" style={{flexWrap: 'wrap'}}>
+                            <span
+                              className="flex gap-1 justify-center items-center"
+                              style={{ flexWrap: "wrap" }}
+                            >
                               <span> Unlock!</span>
                               <span className="badge">1500 $AMMO</span>
                             </span>
